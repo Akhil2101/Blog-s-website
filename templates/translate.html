@@ -22,44 +22,12 @@
   </div>
 </header>
 
-<style>
-    /* Add some basic styling for the dropdown */
-    .dropdown {
-      position: relative;
-      display: inline-block;
-    }
-
-    .dropdown-content {
-      display: none;
-      position: relative;
-      background-color: #f9f9f9;
-      min-width: 160px;
-      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-      z-index: 1;
-    }
-
-    .dropdown:hover .dropdown-content {
-      display: block;
-    }
-  </style>
-<div class="dropdown">
-    <button class="btn btn-primary">Translate</button>
-    <div class="dropdown-content">
-      <!-- Add your dropdown options here -->
-      <a href="{{url_for('translate',post_id=post.id,code='fr')}}">French</a>
-      <a href="{{url_for('translate', post_id=post.id,code='hi')}}">Hindi</a>
-      <a href="{{url_for('translate', post_id=post.id,code='es')}}">Spanish</a>
-    </div>
-  </div>
-
-
-
 <!-- Post Content -->
 <article>
   <div class="container px-4 px-lg-5">
     <div class="row gx-4 gx-lg-5 justify-content-center">
       <div class="col-md-10 col-lg-8 col-xl-7">
-        {{ post.body|safe }}
+        {{ body|safe }}
         <!--Only show Edit Post button if user id is 1 (admin user) -->
         {% if current_user.id == 1 %}
         <div class="d-flex justify-content-end mb-4">
