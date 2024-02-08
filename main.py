@@ -13,7 +13,7 @@ from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.orm import relationship
 from flask_mysqldb import MySQL
-
+from translate import Translator
 from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
 
 
@@ -254,6 +254,27 @@ def contact():
         return render_template("contact.html", msg_sent=True)
     return render_template("contact.html", msg_sent=False)
 
+@app.route("/translate/<int:post_id>/<code>")
+def translate(post_id,code):
+    post_to_translate = db.get_or_404(BlogPost, post_id)
+    chunks = [post_to_translate.body[i:i + 500] for i in range(0, len(post_to_translate.body), 500)]
+    translator = Translator(to_lang=code)
+    translated_chunks = [translator.translate(chunk) for chunk in chunks]
+    translated_text = ''.join(translated_chunks)
+    comment_form = CommentForm()
+    # Only allow logged-in users to comment on posts
+    if comment_form.validate_on_submit():
+        if not current_user.is_authenticated:
+            flash("You need to login or register to comment.")
+            return redirect(url_for("login"))
 
+        new_comment = Comment(
+            text=comment_form.comment_text.data,
+            comment_author=current_user,
+            parent_post=post_to_translate
+        )
+        db.session.add(new_comment)
+        db.session.commit()
+    return render_template("translate.html",body=translated_text,post=post_to_translate, current_user=current_user,form=comment_form)
 if __name__ == "__main__":
     app.run(debug=True,port=5000)
