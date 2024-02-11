@@ -12,12 +12,20 @@ from flask_sqlalchemy import SQLAlchemy
 from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.orm import relationship
+
+from flask_mysqldb import MySQL
 from translate import Translator
 from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
 
 
 
 app = Flask(__name__)
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = 'Dpu9897'
+app.config['MYSQL_DB'] = 'postdb'
+
+mysql = MySQL(app)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
 ckeditor = CKEditor(app)
 Bootstrap5(app)
@@ -44,7 +52,8 @@ gravatar = Gravatar(app,
                     use_ssl=False,
                     base_url=None)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:Dpu9897@localhost/postdb'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy()
 db.init_app(app)
 
@@ -245,6 +254,8 @@ def contact():
             connection.sendmail(EMAIL,EMAIL,email_message)
         return render_template("contact.html", msg_sent=True)
     return render_template("contact.html", msg_sent=False)
+
+
 @app.route("/translate/<int:post_id>/<code>")
 def translate(post_id,code):
     post_to_translate = db.get_or_404(BlogPost, post_id)
@@ -267,6 +278,5 @@ def translate(post_id,code):
         db.session.add(new_comment)
         db.session.commit()
     return render_template("translate.html",body=translated_text,post=post_to_translate, current_user=current_user,form=comment_form)
-
 if __name__ == "__main__":
     app.run(debug=True,port=5000)
