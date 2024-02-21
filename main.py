@@ -1,12 +1,9 @@
 from datetime import datetime,date
 import requests
 import smtplib
-import os
-from dotenv import load_dotenv
 from flask import Flask, abort, render_template, redirect, url_for, flash,request
-from flask_bootstrap import Bootstrap5
+from flask_bootstrap import Bootstrap
 from flask_ckeditor import CKEditor
-from flask_gravatar import Gravatar
 from flask_login import UserMixin, login_user, LoginManager, current_user, logout_user, login_required
 from flask_sqlalchemy import SQLAlchemy
 from functools import wraps
@@ -20,22 +17,21 @@ from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
 
 
 app = Flask(__name__)
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_HOST'] = '192.168.56.45'
+app.config['MYSQL_USER'] = 'Akhil'
 app.config['MYSQL_PASSWORD'] = 'Dpu9897'
 app.config['MYSQL_DB'] = 'postdb'
 
 mysql = MySQL(app)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
 ckeditor = CKEditor(app)
-Bootstrap5(app)
+Bootstrap(app)
 
 # Configure Flask-Login
 login_manager = LoginManager()
 login_manager.init_app(app)
-load_dotenv()
-EMAIL=os.getenv("EMAIL")
-Pass=os.getenv("PASS")
+EMAIL="panwarakhil033@gmail.com"
+Pass="ahcjkan"
 
 
 @login_manager.user_loader
@@ -43,16 +39,8 @@ def load_user(user_id):
     return db.get_or_404(User, user_id)
 
 
-gravatar = Gravatar(app,
-                    size=100,
-                    rating='g',
-                    default='retro',
-                    force_default=False,
-                    force_lower=False,
-                    use_ssl=False,
-                    base_url=None)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:Dpu9897@localhost/postdb'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://Akhil:Dpu9897@192.168.56.45/postdb'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy()
 db.init_app(app)
@@ -279,4 +267,4 @@ def translate(post_id,code):
         db.session.commit()
     return render_template("translate.html",body=translated_text,post=post_to_translate, current_user=current_user,form=comment_form)
 if __name__ == "__main__":
-    app.run(debug=True,port=5000)
+    app.run(debug=True,port=5001,host='0.0.0.0')
