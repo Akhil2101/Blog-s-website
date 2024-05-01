@@ -31,7 +31,7 @@ Bootstrap(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 EMAIL="panwarakhil033@gmail.com"
-Pass="ahcjkan"
+Pass="###"
 
 
 @login_manager.user_loader
