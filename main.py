@@ -17,8 +17,8 @@ from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
 
 
 app = Flask(__name__)
-app.config['MYSQL_HOST'] = '192.168.56.45'
-app.config['MYSQL_USER'] = 'Akhil'
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'Dpu9897'
 app.config['MYSQL_DB'] = 'postdb'
 
@@ -40,7 +40,7 @@ def load_user(user_id):
 
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://Akhil:Dpu9897@192.168.56.45/postdb'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:Dpu9897@localhost/postdb'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy()
 db.init_app(app)
